@@ -1,13 +1,13 @@
 name: Сборка Crystal OS для Redmi 7A/8/8A
 
 on:
-  workflow_dispatch: # Позволяет запускать сборку вручную кнопкой
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-22.04
     permissions:
-      contents: write # Дает право серверу загрузить файл в Релизы
+      contents: write
 
     steps:
     - name: 1. Максимальная зачистка места на диске
@@ -33,15 +33,21 @@ jobs:
         mkdir android && cd android
         repo init -u https://github.com/LineageOS/android.git -b lineage-18.1 --depth=1
         
-    - name: 4. Скачивание дерева устройств, вендора и ядра
+    - name: 4. Создание локального манифеста зависимостей Xiaomi
       run: |
         cd android
-        git clone --depth=1 -b lineage-18.1 https://github.com/mi-sdm439/android_device_xiaomi_mi439.git device/xiaomi/mi439
-        git clone --depth=1 -b lineage-18.1 https://github.com/mi-sdm439/android_device_xiaomi_sdm439-common.git device/xiaomi/sdm439-common
-        git clone --depth=1 -b lineage-18.1 https://github.com/mi-sdm439/android_vendor_xiaomi_sdm439.git vendor/xiaomi/mi439
-        git clone --depth=1 -b lineage-18.1 https://github.com/mi-sdm439/android_kernel_xiaomi_sdm439.git kernel/xiaomi/sdm439
-    
-    - name: 5. Синхронизация репозиториев (Repo Sync)
+        mkdir -p .repo/local_manifests
+        cat <<EOF > .repo/local_manifests/roomservice.xml
+        <?xml version="1.0" encoding="UTF-8"?>
+        <manifest>
+          <project name="mi-sdm439/android_device_xiaomi_mi439" path="device/xiaomi/mi439" remote="github" revision="lineage-18.1" />
+          <project name="mi-sdm439/android_device_xiaomi_sdm439-common" path="device/xiaomi/sdm439-common" remote="github" revision="lineage-18.1" />
+          <project name="mi-sdm439/android_vendor_xiaomi_sdm439" path="vendor/xiaomi" remote="github" revision="lineage-18.1" />
+          <project name="mi-sdm439/android_kernel_xiaomi_sdm439" path="kernel/xiaomi/sdm439" remote="github" revision="lineage-18.1" />
+        </manifest>
+        EOF
+
+    - name: 5. Полная синхронизация репозиториев (Repo Sync)
       run: |
         cd android
         repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
@@ -59,9 +65,9 @@ jobs:
       if: success()
       uses: ncipollo/release-action@v1
       with:
-        artifacts: "android/out/target/product/pine/CrystalOS*.zip" # Ищем готовый архив
-        tag: "v1.0-pine" # Имя тега релиза
+        artifacts: "android/out/target/product/pine/CrystalOS*.zip"
+        tag: "v1.0-pine"
         name: "Crystal OS v1.0 для Redmi 7A (pine)"
         body: "Официальная сборка Crystal OS на базе Android 11. Скомпилировано автоматически через GitHub Actions."
         allowUpdates: true
-        token: ${{ secrets.GITHUB_TOKEN }} # Стандартный внутренний ключ гитхаба
+        token: ${{ secrets.GITHUB_TOKEN }}
