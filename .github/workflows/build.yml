@@ -34,18 +34,17 @@ jobs:
         repo init -u https://github.com/LineageOS/android.git -b lineage-18.1 --depth=1
         
     - name: 4. Погнали локальные репозитории (Crystal OS Manifest)
-        run: |
-          mkdir -p .repo/local_manifests
-          cat <<EOF > .repo/local_manifests/crystal.xml
-          <?xml version="1.0" encoding="UTF-8"?>
-          <manifest>
-            <project path="device/xiaomi/mi439" name="Pashamin/android_device_xiaomi_pine" remote="github" revision="lineage-18.1" />
-            
-            <project path="kernel/xiaomi/sdm439" name="Pashamin/android_kernel_xiaomi_sdm439" remote="github" revision="lineage-18.1" />
-            
-            <project path="vendor/xiaomi/mi439" name="Pashamin/android_vendor_xiaomi_pine" remote="github" revision="lineage-18.1" />
-          </manifest>
-          EOF
+      run: |
+        cd android
+        mkdir -p .repo/local_manifests
+        cat <<EOF > .repo/local_manifests/crystal.xml
+        <?xml version="1.0" encoding="UTF-8"?>
+        <manifest>
+          <project path="device/xiaomi/mi439" name="Pashamin/android_device_xiaomi_pine" remote="github" revision="lineage-18.1" />
+          <project path="kernel/xiaomi/sdm439" name="Pashamin/android_kernel_xiaomi_sdm439" remote="github" revision="lineage-18.1" />
+          <project path="vendor/xiaomi/mi439" name="Pashamin/android_vendor_xiaomi_pine" remote="github" revision="lineage-18.1" />
+        </manifest>
+        EOF
 
     - name: 5. Полная синхронизация репозиториев (Repo Sync)
       run: |
@@ -56,7 +55,8 @@ jobs:
       run: |
         cd android
         source build/envsetup.sh
-        lunch crystal_pine-userdebug
+        # ВНИМАНИЕ: Если менял имя конфигурации в дереве на crystal_pine, верни crystal_pine-userdebug
+        lunch lineage_pine-userdebug
         export MINIMAL_APPS=true
         export WITH_SU=true
         mka bacon -j2
@@ -65,7 +65,7 @@ jobs:
       if: success()
       uses: ncipollo/release-action@v1
       with:
-        artifacts: "android/out/target/product/pine/CrystalOS*.zip"
+        artifacts: "android/out/target/product/pine/*.zip"
         tag: "v1.0-pine"
         name: "Crystal OS v1.0 для Redmi 7A (pine)"
         body: "Официальная сборка Crystal OS на базе Android 11. Скомпилировано автоматически через GitHub Actions."
