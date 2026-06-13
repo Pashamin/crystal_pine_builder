@@ -38,9 +38,9 @@ jobs:
         cd android
         git clone --depth=1 -b lineage-18.1 https://github.com/mi-sdm439/android_device_xiaomi_mi439.git device/xiaomi/mi439
         git clone --depth=1 -b lineage-18.1 https://github.com/mi-sdm439/android_device_xiaomi_sdm439-common.git device/xiaomi/sdm439-common
-        git clone --depth=1 -b lineage-18.1 https://github.com/mi-sdm439/android_vendor_xiaomi_mi439.git vendor/xiaomi/mi439
+        git clone --depth=1 -b lineage-18.1 https://github.com/mi-sdm439/android_vendor_xiaomi_sdm439.git vendor/xiaomi/mi439
         git clone --depth=1 -b lineage-18.1 https://github.com/mi-sdm439/android_kernel_xiaomi_sdm439.git kernel/xiaomi/sdm439
-
+    
     - name: 5. Синхронизация репозиториев (Repo Sync)
       run: |
         cd android
