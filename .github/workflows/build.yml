@@ -104,13 +104,13 @@ jobs:
         echo "=== Содержимое vendor/xiaomi/sdm439-common ==="
         ls -la vendor/xiaomi/sdm439-common || echo "Папка sdm439-common не существует"
 
-    - name: 7. Запуск компиляции прошивки (Точечный фикс)
+    - name: 7. Запуск компиляции прошивки (Заглушка для cmd)
       run: |
         cd android
         
-        echo "=== Аккуратно чиним Android.bp без удаления ==="
-        # Меняем $(PATH_OVERRIDE_SOONG) на обычную точку (текущая директория)
-        sed -i 's/\$(PATH_OVERRIDE_SOONG)/./g' vendor/lineage/build/soong/Android.bp
+        echo "=== Нейтрализуем вредные переменные через заглушку ==="
+        # Находим строку cmd внутри модуля generated_kernel_includes и заменяем её содержимое на безопасное "true"
+        sed -i '/module "generated_kernel_includes"/,/}/s/cmd: .*/cmd: "true",/' vendor/lineage/build/soong/Android.bp
         
         echo "=== Инициализация и запуск ==="
         export MINIMAL_APPS=true
