@@ -115,7 +115,7 @@ jobs:
       run: |
         cd android
         
-        echo "=== Пишем Android.bp с генератором и мега-паком заглушек ==="
+        echo "=== Пишем Android.bp с генератором и полным паком заглушек ==="
         cat << 'EOF' > vendor/lineage/build/soong/Android.bp
         bootstrap_go_package {
             name: "soong-lineage-generator",
@@ -168,6 +168,11 @@ jobs:
         // 6. Заглушка для hardware/interfaces/camera/device/1.0/default
         cc_defaults {
             name: "qti_camera_device_defaults",
+        }
+
+        // 7. Заглушка для bootable/recovery/bootloader_message
+        cc_defaults {
+            name: "bootloader_message_offset_defaults",
         }
         EOF
         
