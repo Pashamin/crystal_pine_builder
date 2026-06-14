@@ -115,7 +115,7 @@ jobs:
       run: |
         cd android
         
-        echo "=== Пишем Android.bp с генератором и полным паком заглушек ==="
+        echo "=== Пишем Android.bp с генератором и мега-паком заглушек ==="
         cat << 'EOF' > vendor/lineage/build/soong/Android.bp
         bootstrap_go_package {
             name: "soong-lineage-generator",
@@ -134,18 +134,40 @@ jobs:
             pluginFor: ["soong_build"],
         }
 
-        // Заглушки для bionic/linker
+        // 1. Заглушки для bionic/linker
         cc_defaults {
             name: "process_sdk_version_overrides_defaults",
         }
-
         cc_defaults {
             name: "shim_libs_defaults",
         }
 
-        // Заглушка для art/libartbase
+        // 2. Заглушка для art/libartbase
         cc_defaults {
             name: "has_memfd_backport_defaults",
+        }
+
+        // 3. Заглушка для vendor/qcom/opensource/dataservices/rmnetctl
+        cc_defaults {
+            name: "librmnetctl_pre_uplink_defaults",
+        }
+
+        // 4. Заглушки для system/vold
+        cc_defaults {
+            name: "vold_hw_fde_defaults",
+        }
+        cc_defaults {
+            name: "vold_hw_fde_perf_defaults",
+        }
+
+        // 5. Заглушка для frameworks/av/media/libstagefright/bqhelper
+        cc_defaults {
+            name: "stagefright_qcom_legacy_defaults",
+        }
+
+        // 6. Заглушка для hardware/interfaces/camera/device/1.0/default
+        cc_defaults {
+            name: "qti_camera_device_defaults",
         }
         EOF
         
