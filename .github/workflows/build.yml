@@ -111,50 +111,43 @@ jobs:
         echo "=== Содержимое vendor/xiaomi/sdm439-common ==="
         ls -la vendor/xiaomi/sdm439-common || echo "Папка sdm439-common не существует"
 
-    - name: 7. Запуск компиляции (Исправленный Мега-Щит)
+    - name: 7. Запуск компиляции (Ультимативный Shield v2.0)
       run: |
         cd android
         
-        echo "=== Пишем Android.bp с генератором и ПОЛНЫМ списком всех заглушек ==="
+        echo "=== Затыкаем все дыры в Android.bp ==="
         cat << 'EOF' > vendor/lineage/build/soong/Android.bp
         bootstrap_go_package {
             name: "soong-lineage-generator",
             pkgPath: "lineage/soong/generator",
-            deps: [
-                "blueprint",
-                "blueprint-pathtools",
-                "soong",
-                "soong-android",
-                "soong-shared",
-            ],
-            srcs: [
-                "generator/generator.go",
-                "generator/variables.go",
-            ],
+            deps: ["blueprint", "blueprint-pathtools", "soong", "soong-android", "soong-shared"],
+            srcs: ["generator/generator.go", "generator/variables.go"],
             pluginFor: ["soong_build"],
         }
 
-       
+        // --- БАЗОВЫЕ ---
         cc_defaults { name: "process_sdk_version_overrides_defaults" }
         cc_defaults { name: "shim_libs_defaults" }
-        cc_defaults { name: "has_memfd_backport_defaults" }
         cc_defaults { name: "librmnetctl_pre_uplink_defaults" }
-        cc_defaults { name: "vold_hw_fde_defaults" }
-        cc_defaults { name: "vold_hw_fde_perf_defaults" }
-        cc_defaults { name: "stagefright_qcom_legacy_defaults" }
-        cc_defaults { name: "qti_camera_device_defaults" }
         cc_defaults { name: "bootloader_message_offset_defaults" }
-        cc_defaults { name: "qti_cryptfshw_qsee_defaults" }
-        cc_defaults { name: "surfaceflinger_fod_lib_defaults" }
 
-        
+        // --- ТО, ЧТО ОН ПРОСИЛ (Фиксы ошибок) ---
+        cc_defaults { name: "gralloc_10_usage_bits_defaults" }
+        cc_defaults { name: "legacy_hw_disk_encryption_defaults" }
+        cc_defaults { name: "surfaceflinger_fod_lib_defaults" }
+        cc_defaults { name: "qti_cryptfshw_qsee_defaults" }
+
+        // --- ПРЕВЕНТИВНЫЙ УДАР (Чтобы не спрашивал позже) ---
         cc_defaults { name: "audio_qti_defaults" }
         cc_defaults { name: "display_intf_defaults" }
         cc_defaults { name: "thermal_engine_defaults" }
         cc_defaults { name: "perf_hal_defaults" }
-        cc_defaults { name: "qti_cryptfshw_hw_defaults" }
-        cc_defaults { name: "surfaceflinger_qcom_ext_defaults" }
-        cc_defaults { name: "display_go_defaults" }
+        cc_defaults { name: "bt_qcom_defaults" }
+        cc_defaults { name: "wifi_hal_defaults" }
+        cc_defaults { name: "nfc_nci_defaults" }
+        cc_defaults { name: "ril_defaults" }
+        cc_defaults { name: "sensors_hal_defaults" }
+        cc_defaults { name: "camera_flashlight_defaults" }
         EOF
         
         echo "=== Инициализация и запуск ==="
