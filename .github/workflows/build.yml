@@ -51,36 +51,27 @@ jobs:
         <?xml version="1.0" encoding="UTF-8"?>
         <manifest>
           <project name="Pashamin/android_device_xiaomi_pine" path="device/xiaomi/mi439" remote="github" revision="lineage-18.1" />
-            
-            <project name="mi-sdm439/android_device_xiaomi_sdm439-common" path="device/xiaomi/sdm439-common" remote="github" revision="lineage-18.1" />
-            
-            <project name="Pashamin/android_vendor_xiaomi_pine" path="vendor/xiaomi/mi439" remote="github" revision="lineage-18.1" />
-            
-            <project name="Pashamin/android_kernel_xiaomi_sdm439" path="kernel/xiaomi/sdm439" remote="github" revision="lineage-18.1" />
+          <project name="mi-sdm439/android_device_xiaomi_sdm439-common" path="device/xiaomi/sdm439-common" remote="github" revision="lineage-18.1" />
+          <project name="Pashamin/android_kernel_xiaomi_sdm439" path="kernel/xiaomi/sdm439" remote="github" revision="lineage-18.1" />
         </manifest>
         EOF
 
     - name: 5. Полная синхронизация репозиториев (Repo Sync)
       run: |
         cd android
+        # Качаем только девайс и ядро через repo
         repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
         
-        echo "=== Бэкапим исходники избавляясь от ссылок ==="
-        # Копируем папки целиком через cp -rL. Флаг -L заставляет cp следовать по ссылкам 
-        # и копировать РЕАЛЬНОЕ содержимое файлов вместо самих ссылок!
-        mkdir -p /tmp/android_backup
-        cp -rL device /tmp/android_backup/
-        cp -rL vendor /tmp/android_backup/
-        cp -rL kernel /tmp/android_backup/
-        
-        echo "=== Чистим .repo и старые папки ==="
+        echo "=== Освобождаем место (чистим .repo) ==="
         rm -rf .repo
-        rm -rf device vendor kernel
         
-        echo "=== Возвращаем чистые файлы на место ==="
-        mv /tmp/android_backup/device .
-        mv /tmp/android_backup/vendor .
-        mv /tmp/android_backup/kernel .
+        echo "=== Качаем вендор чистыми файлами ==="
+        # Сюда мы клонируем твой вендор напрямую. Никаких битых ссылок!
+        git clone --depth=1 -b lineage-18.1 https://github.com/Pashamin/android_vendor_xiaomi_pine.git vendor/xiaomi/mi439
+        
+        echo "=== Дублируем для совместимости путей ==="
+        # Делаем копию в sdm439-common, чтобы сборщик нашел файлы при любых путях
+        cp -r vendor/xiaomi/mi439 vendor/xiaomi/sdm439-common
         
         df -h
 
