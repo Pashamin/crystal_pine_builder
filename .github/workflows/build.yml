@@ -75,22 +75,25 @@ jobs:
         
         df -h
 
-    - name: 5.1 Жесткая фиксация путей вендора
+    - name: 5.1 Жесткое уничтожение битых ссылок Колаба
       run: |
-        cd android
+        cd android/vendor/xiaomi/mi439
         
-        # Проверяем, куда на самом деле скачался наш репо. 
-        # Если он скачался в mi439, а система ищет в sdm439-common, делаем копию папки
-        if [ -d "vendor/xiaomi/mi439" ]; then
-          echo "Вендор найден в vendor/xiaomi/mi439"
-          cp -r vendor/xiaomi/mi439 vendor/xiaomi/sdm439-common || true
-        elif [ -d "vendor/xiaomi/sdm439-common" ]; then
-          echo "Вендор найден в vendor/xiaomi/sdm439-common"
-          cp -r vendor/xiaomi/sdm439-common vendor/xiaomi/mi439 || true
-        fi
-
-        # Отключаем roomservice, чтобы он не затирал наши репозитории оригинальными репозиториями LineageOS
-        export DISABLE_ROOMSERVICE=true
+        # Удаляем битые ссылки
+        rm -f sdm439-common-vendor.mk
+        rm -f BoardConfigSDM439.mk
+        
+        # Создаем вместо них РЕАЛЬНЫЕ файлы-дубликаты из тех, что есть в папке
+        cp mi439-vendor.mk sdm439-common-vendor.mk
+        cp BoardConfigVendor.mk BoardConfigSDM439.mk
+        
+        # Теперь дублируем всё это дело в соседнюю папку sdm439-common
+        cd ..
+        rm -rf sdm439-common
+        cp -r mi439 sdm439-common
+        
+        echo "=== ПРОВЕРКА ПОСЛЕ ФИКСА ==="
+        ls -la sdm439-common/
         
     - name: 6. Проверка существования файлов в обеих папках
       run: |
