@@ -73,7 +73,7 @@ jobs:
         rm -rf .repo
         
         echo "=== Качаем вендор чистыми файлами ==="
-        # Сюда мы клонируем твой вендор напрямую. Никаких битых ссылок!
+        
         git clone --depth=1 -b lineage-18.1 https://github.com/Pashamin/android_vendor_xiaomi_pine.git vendor/xiaomi/mi439
         
         echo "=== Дублируем для совместимости путей ==="
@@ -111,11 +111,14 @@ jobs:
         echo "=== Содержимое vendor/xiaomi/sdm439-common ==="
         ls -la vendor/xiaomi/sdm439-common || echo "Папка sdm439-common не существует"
 
-    - name: 7. Запуск компиляции (Подключаем все файлы Go)
+    - name: 7. Запуск компиляции (Исправленные пути к пакетам Go)
       run: |
         cd android
         
-        echo "=== Пишем Android.bp с подключением всех .go файлов ==="
+        echo "=== Проверяем точный список файлов в папке generator ==="
+        ls -la vendor/lineage/build/soong/generator/
+        
+        echo "=== Пишем Android.bp с правильными префиксами папок ==="
         cat << 'EOF' > vendor/lineage/build/soong/Android.bp
         bootstrap_go_package {
             name: "soong-lineage-generator",
@@ -128,8 +131,8 @@ jobs:
                 "soong-shared",
             ],
             srcs: [
-                "generator.go",
-                "variables.go",
+                "generator/generator.go",
+                "generator/variables.go",
             ],
             pluginFor: ["soong_build"],
         }
