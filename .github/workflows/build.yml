@@ -104,15 +104,11 @@ jobs:
         echo "=== Содержимое vendor/xiaomi/sdm439-common ==="
         ls -la vendor/xiaomi/sdm439-common || echo "Папка sdm439-common не существует"
 
-    - name: 7. Диагностика и запуск компиляции
+    - name: 7. Запуск компиляции прошивки (Правильный путь к файлу)
       run: |
         cd android
         
-        echo "=== ПРОВЕРЯЕМ СУЩЕСТВОВАНИЕ ФАЙЛОВ ==="
-        echo "Что лежит в vendor/lineage/build/soong/:"
-        ls -la vendor/lineage/build/soong/
-        
-        echo "=== Пишем чистый Android.bp ==="
+        echo "=== Пишем Android.bp с правильным путем к generator.go ==="
         cat << 'EOF' > vendor/lineage/build/soong/Android.bp
         bootstrap_go_package {
             name: "soong-lineage-generator",
@@ -125,7 +121,7 @@ jobs:
                 "soong-shared",
             ],
             srcs: [
-                "generator.go",
+                "generator/generator.go",
             ],
             pluginFor: ["soong_build"],
         }
@@ -138,7 +134,8 @@ jobs:
         source build/envsetup.sh
         lunch crystal_pine-userdebug
         
-        mka bacon -j2
+        # Снижаем нагрузку на RAM, так как сервер предупредил про нехватку памяти
+        mka bacon -j1
 
     - name: 8. Создание официального релиза и загрузка ZIP
       if: success()
