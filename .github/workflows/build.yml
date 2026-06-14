@@ -111,14 +111,11 @@ jobs:
         echo "=== Содержимое vendor/xiaomi/sdm439-common ==="
         ls -la vendor/xiaomi/sdm439-common || echo "Папка sdm439-common не существует"
 
-    - name: 7. Запуск компиляции (Исправленные пути к пакетам Go)
+    - name: 7. Запуск компиляции 
       run: |
         cd android
         
-        echo "=== Проверяем точный список файлов в папке generator ==="
-        ls -la vendor/lineage/build/soong/generator/
-        
-        echo "=== Пишем Android.bp с правильными префиксами папок ==="
+        echo "=== Пишем Android.bp с генератором и заглушками для линкера ==="
         cat << 'EOF' > vendor/lineage/build/soong/Android.bp
         bootstrap_go_package {
             name: "soong-lineage-generator",
@@ -135,6 +132,15 @@ jobs:
                 "generator/variables.go",
             ],
             pluginFor: ["soong_build"],
+        }
+
+        
+        cc_defaults {
+            name: "process_sdk_version_overrides_defaults",
+        }
+
+        cc_defaults {
+            name: "shim_libs_defaults",
         }
         EOF
         
