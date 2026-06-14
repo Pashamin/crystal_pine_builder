@@ -16,5 +16,7 @@ https://github.com/Pashamin/android_device_xiaomi_pine/
 https://github.com/Pashamin/android_kernel_xiaomi_sdm439/
 https://github.com/Pashamin/android_device_xiaomi_pine/
 
+P.S При создании форка пожалуйста укажите ссылку на оригинальный проект, так вы поможете мне и другим людям!
+
 # ДОП. ИСТОЧНИКИ (НЕОБХОДИМЫ ДЛЯ РАБОТЫ) ОТДЕЛЬНОЕ СПАСИБО КОМАНДЕ MI439
 https://github.com/mi-sdm439/android_device_xiaomi_sdm439-common
