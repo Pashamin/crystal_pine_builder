@@ -142,7 +142,6 @@ jobs:
         cc_defaults { name: "no_cameraserver_defaults" }
         cc_defaults { name: "qti_camera_device_defaults" }
         cc_defaults { name: "needs_camera_boottime_defaults" }
-        cc_defaults { name: "camera_service_defaults" }
         cc_defaults { name: "camera_qti_defaults" }
         cc_defaults { name: "libcamera_metadata_defaults" }
 
