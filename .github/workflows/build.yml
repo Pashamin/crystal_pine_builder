@@ -148,6 +148,14 @@ jobs:
         // --- НОВЫЕ ЗАГЛУШКИ (Crypto/QSEE) ---
         cc_defaults { name: "qti_cryptfshw_qsee_defaults" }
         EOF
+
+
+        cc_defaults { name: "qti_camera_device_defaults" }
+        cc_defaults { name: "surfaceflinger_fod_lib_defaults" }
+        cc_defaults { name: "audio_qti_defaults" }
+        cc_defaults { name: "display_intf_defaults" }
+        cc_defaults { name: "thermal_engine_defaults" }
+        cc_defaults { name: "perf_hal_defaults" }
         
         echo "=== Инициализация и запуск ==="
         export MINIMAL_APPS=true
