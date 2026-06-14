@@ -94,11 +94,6 @@ jobs:
         
         echo "=== ПРОВЕРКА ПОСЛЕ ФИКСА ==="
         ls -la sdm439-common/
-
-    - name: 5.2 Фикс переменной PATH_OVERRIDE_SOONG
-      run: |
-        cd android/device/xiaomi/mi439
-        echo "PATH_OVERRIDE_SOONG := \$(shell echo \$(abspath .))" >> BoardConfig.mk
         
     - name: 6. Проверка существования файлов в обеих папках
       run: |
@@ -112,11 +107,23 @@ jobs:
     - name: 7. Запуск компиляции прошивки (Режим экономии)
       run: |
         cd android
-        source build/envsetup.sh
-        lunch crystal_pine-userdebug
+        
+        echo "=== Применяем патч к Android.bp (План Б) ==="
+        # Заменяем вредную переменную на стандартный PWD прямо в файле, где была ошибка
+        sed -i 's/\$(PATH_OVERRIDE_SOONG)/\$(PWD)/g' vendor/lineage/build/soong/Android.bp
+        
+        echo "=== Экспортируем переменные окружения (План А) ==="
+        # Объявляем переменную для всей сессии терминала
+        export PATH_OVERRIDE_SOONG=$(pwd)
         export MINIMAL_APPS=true
         export WITH_SU=true
-        mka bacon -j2
+        
+        echo "=== Инициализация и запуск ==="
+        source build/envsetup.sh
+        lunch crystal_pine-userdebug
+        
+        # Передаем переменную напрямую в команду сборки и запускаем в 2 потока
+        PATH_OVERRIDE_SOONG=$(pwd) mka bacon -j2
 
     - name: 8. Создание официального релиза и загрузка ZIP
       if: success()
