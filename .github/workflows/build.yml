@@ -63,32 +63,52 @@ jobs:
     - name: 5. Полная синхронизация репозиториев (Repo Sync)
       run: |
         cd android
-        repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags 
+        repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
         
+        echo "=== Бэкапим исходники избавляясь от ссылок ==="
+        # Копируем папки целиком через cp -rL. Флаг -L заставляет cp следовать по ссылкам 
+        # и копировать РЕАЛЬНОЕ содержимое файлов вместо самих ссылок!
+        mkdir -p /tmp/android_backup
+        cp -rL device /tmp/android_backup/
+        cp -rL vendor /tmp/android_backup/
+        cp -rL kernel /tmp/android_backup/
         
-        echo "Фиксируем файлы (копируем вместо ссылок)..."
-        find device/ vendor/ kernel/ -type l -exec bash -c 'for link; do true_file=$(readlink -f "$link"); rm "$link"; cp "$true_file" "$link"; done' _ {} + || true
-        
+        echo "=== Чистим .repo и старые папки ==="
         rm -rf .repo
+        rm -rf device vendor kernel
+        
+        echo "=== Возвращаем чистые файлы на место ==="
+        mv /tmp/android_backup/device .
+        mv /tmp/android_backup/vendor .
+        mv /tmp/android_backup/kernel .
+        
         df -h
 
-    - name: 5.1 Фикс путей вендора (Линкуем папки)
+    - name: 5.1 Жесткая фиксация путей вендора
       run: |
-          cd android/vendor/xiaomi
-          cp -r mi439 sdm439-common || true
+        cd android
+        
+        # Проверяем, куда на самом деле скачался наш репо. 
+        # Если он скачался в mi439, а система ищет в sdm439-common, делаем копию папки
+        if [ -d "vendor/xiaomi/mi439" ]; then
+          echo "Вендор найден в vendor/xiaomi/mi439"
+          cp -r vendor/xiaomi/mi439 vendor/xiaomi/sdm439-common || true
+        elif [ -d "vendor/xiaomi/sdm439-common" ]; then
+          echo "Вендор найден в vendor/xiaomi/sdm439-common"
+          cp -r vendor/xiaomi/sdm439-common vendor/xiaomi/mi439 || true
+        fi
 
-
-
-    - name: 6.  Проверка, существует ли файл
+        # Отключаем roomservice, чтобы он не затирал наши репозитории оригинальными репозиториями LineageOS
+        export DISABLE_ROOMSERVICE=true
+        
+    - name: 6. Проверка существования файлов в обеих папках
       run: |
-          cd android
-          if [ -f "vendor/xiaomi/sdm439-common/sdm439-common-vendor.mk" ]; then
-            echo "ФАЙЛ НАЙДЕН! Всё ок."
-          else
-            echo "ФАЙЛ НЕ НАЙДЕН!"
-            echo "Вот что лежит в папке vendor/xiaomi/sdm439-common/:"
-            ls -F vendor/xiaomi/sdm439-common/
-          fi
+        cd android
+        echo "=== Содержимое vendor/xiaomi/mi439 ==="
+        ls -la vendor/xiaomi/mi439 || echo "Папка mi439 не существует"
+        
+        echo "=== Содержимое vendor/xiaomi/sdm439-common ==="
+        ls -la vendor/xiaomi/sdm439-common || echo "Папка sdm439-common не существует"
 
     - name: 7. Запуск компиляции прошивки (Режим экономии)
       run: |
