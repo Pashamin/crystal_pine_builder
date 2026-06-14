@@ -104,14 +104,16 @@ jobs:
         echo "=== Содержимое vendor/xiaomi/sdm439-common ==="
         ls -la vendor/xiaomi/sdm439-common || echo "Папка sdm439-common не существует"
 
-    - name: 7. Запуск компиляции прошивки (Возврат к истокам)
+    - name: 7. Диагностика и запуск компиляции
       run: |
         cd android
         
-        echo "=== Заходим вглубь и пишем чистый Android.bp ==="
-        cd vendor/lineage/build/soong
+        echo "=== ПРОВЕРЯЕМ СУЩЕСТВОВАНИЕ ФАЙЛОВ ==="
+        echo "Что лежит в vendor/lineage/build/soong/:"
+        ls -la vendor/lineage/build/soong/
         
-        cat << 'EOF' > Android.bp
+        echo "=== Пишем чистый Android.bp ==="
+        cat << 'EOF' > vendor/lineage/build/soong/Android.bp
         bootstrap_go_package {
             name: "soong-lineage-generator",
             pkgPath: "lineage/soong/generator",
@@ -128,12 +130,6 @@ jobs:
             pluginFor: ["soong_build"],
         }
         EOF
-        
-        echo "=== ЖЕСТКО ВОЗВРАЩАЕМСЯ В КОРЕНЬ ==="
-        cd ../../../..
-        
-        echo "=== Текущая папка (должна быть /android): ==="
-        pwd
         
         echo "=== Инициализация и запуск ==="
         export MINIMAL_APPS=true
