@@ -66,37 +66,33 @@ jobs:
     - name: 5. Полная синхронизация репозиториев (Repo Sync)
       run: |
         cd android
-        
         repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
         
         echo "=== Освобождаем место (чистим .repo) ==="
         rm -rf .repo
         
-        echo "=== Качаем вендор чистыми файлами ==="
-        
+        echo "=== Качаем вендор в mi439 ==="
         git clone --depth=1 -b lineage-18.1 https://github.com/Pashamin/android_vendor_xiaomi_pine.git vendor/xiaomi/mi439
         
-        echo "=== Дублируем для совместимости путей ==="
+        echo "=== Качаем ТОТ ЖЕ вендор в sdm439-common, чтобы пути совпали ==="
         
-        cp -r vendor/xiaomi/mi439 vendor/xiaomi/sdm439-common
-        
-        df -h
+        git clone --depth=1 -b lineage-18.1 https://github.com/Pashamin/android_vendor_xiaomi_pine.git vendor/xiaomi/sdm439-common
 
-    - name: 5.1 Очистка
+    - name: 5.1 Ояистка
       run: |
         cd android/vendor/xiaomi/mi439
-        rm -f sdm439-common-vendor.mk
-        rm -f BoardConfigSDM439.mk
         
-        cp mi439-vendor.mk sdm439-common-vendor.mk
-        cp BoardConfigVendor.mk BoardConfigSDM439.mk
+        mv -f mi439-vendor.mk sdm439-common-vendor.mk
+        mv -f BoardConfigVendor.mk BoardConfigSDM439.mk
         
-        cd ..
-        rm -rf sdm439-common
-        cp -r mi439 sdm439-common
+        cd ../sdm439-common
         
-        echo "=== ПРОВЕРКА ПОСЛЕ ФИКСА ==="
-        ls -la sdm439-common/
+        mv -f mi439-vendor.mk sdm439-common-vendor.mk
+        mv -f BoardConfigVendor.mk BoardConfigSDM439.mk
+        
+        echo "=== ПРОВЕРКА НАЛИЧИЯ БЛОБОВ КАМЕРЫ ==="
+        ls -la proprietary/vendor/lib/libqservice.so || echo "Файл libqservice не найден в lib!"
+        ls -la proprietary/vendor/lib64/libqservice.so || echo "Файл libqservice не найден в lib64!"
         
     - name: 6. Проверка существования файлов в обеих папках
       run: |
