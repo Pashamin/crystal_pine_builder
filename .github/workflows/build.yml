@@ -159,6 +159,8 @@ jobs:
         cc_defaults { name: "stagefright_qcom_legacy_defaults" }
         cc_defaults { name: "camera_in_mediaserver_defaults" }
         cc_defaults { name: "extended_compress_format_defaults" }
+        cc_defaults { name: "camera_parameter_library_defaults" }
+        cc_defaults { name: "nvidia_enhancements_defaults" }
         EOF
         
         echo "=== Инициализация и запуск ==="
