@@ -130,6 +130,7 @@ jobs:
         cc_defaults { name: "shim_libs_defaults" }
         cc_defaults { name: "librmnetctl_pre_uplink_defaults" }
         cc_defaults { name: "bootloader_message_offset_defaults" }
+        cc_defaults { name: "needs_netd_direct_connect_rule_defaults" }
 
         
         cc_defaults { name: "gralloc_10_usage_bits_defaults" }
