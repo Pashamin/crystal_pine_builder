@@ -136,7 +136,6 @@ jobs:
         cc_defaults { name: "qti_perf_defaults" }
         cc_defaults { name: "memory_management_defaults" }
         cc_defaults { name: "cgroup_optimization_defaults" }
-        cc_defaults { name: "libmeminfo_defaults" }
         cc_defaults { name: "lmkd_defaults" }
         cc_defaults { name: "libmemory_management_defaults" }
 
