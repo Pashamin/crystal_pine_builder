@@ -222,6 +222,11 @@ jobs:
         cc_defaults { name: "android.hardware.gnss-defaults" }
 
 
+        cc_defaults { name: "disable_postrender_cleanup_defaults" }
+        cc_defaults { name: "surfaceflinger_qcom_ext_defaults" }
+        cc_defaults { name: "vold_hw_fde_perf_defaults" }
+
+
         // --- ПАКЕТ "ДИСПЛЕЙ И ОПТИМИЗАЦИЯ ЭКРАНА QUALCOMM" ---
         cc_defaults { name: "display_settings_defaults" }
         cc_defaults { name: "qti_display_enhancements_defaults" }
