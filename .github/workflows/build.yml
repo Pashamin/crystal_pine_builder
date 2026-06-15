@@ -157,6 +157,8 @@ jobs:
         cc_defaults { name: "sensors_hal_defaults" }
         cc_defaults { name: "camera_flashlight_defaults" }
         cc_defaults { name: "stagefright_qcom_legacy_defaults" }
+        cc_defaults { name: "camera_in_mediaserver_defaults" }
+        cc_defaults { name: "extended_compress_format_defaults" }
         EOF
         
         echo "=== Инициализация и запуск ==="
