@@ -156,6 +156,7 @@ jobs:
         cc_defaults { name: "ril_defaults" }
         cc_defaults { name: "sensors_hal_defaults" }
         cc_defaults { name: "camera_flashlight_defaults" }
+        cc_defaults { name: "stagefright_qcom_legacy_defaults" }
         EOF
         
         echo "=== Инициализация и запуск ==="
