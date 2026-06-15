@@ -95,9 +95,6 @@ jobs:
         rm -rf sdm439-common
         cp -r mi439 sdm439-common
         
-        echo "=== Выпиливаем дубликат аудио из ядра ==="
-        rm -rf ../kernel/xiaomi/sdm439/techpack/audio
-        
         echo "=== ПРОВЕРКА ПОСЛЕ ФИКСА ==="
         ls -la sdm439-common/
         
@@ -113,6 +110,17 @@ jobs:
     - name: 7. Запуск компиляции 
       run: |
         cd android
+
+        echo "=== УДАЛЕНИЕ ДУБЛИКАТА АУДИО ==="
+        
+        rm -rf kernel/xiaomi/sdm439/techpack/audio
+        
+        
+        if [ ! -d "kernel/xiaomi/sdm439/techpack/audio" ]; then
+          echo "Успех! Старая папка аудио стерта."
+        else
+          echo "ВНИМАНИЕ: Папка все еще тут!"
+        fi
         
         echo "=== Затыкаем все дыры в Android.bp ==="
         cat << 'EOF' > vendor/lineage/build/soong/Android.bp
@@ -276,7 +284,7 @@ jobs:
         source build/envsetup.sh
         lunch crystal_pine-userdebug
         
-        mka bacon -j1
+        mka bacon -j2
 
     - name: 8. Создание официального релиза и загрузка ZIP
       if: success()
