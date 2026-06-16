@@ -286,10 +286,20 @@ jobs:
       if: success()
       uses: ncipollo/release-action@v1
       with:
-        
-        artifacts: "android/out/target/product/*/*.zip"
+        artifacts: "android/out/target/product/pine/*.zip"
         tag: "v1.0-mi439"
         name: "Crystal OS v1.0 для Redmi 7A/8/8A (mi439)"
-        body: "Официальная сборка Crystal OS на базе Android 11. Скомпилировано автоматически через GitHub Actions."
+        body: |
+          ### Crystal OS v1.0 — Официальный тестовый билд
+          * **Платформа:** Redmi 7A / 8 / 8A (`mi439` / `pine`)
+          * **База:** Android 11 (LineageOS 18.1)
+          * Скомпилировано автоматически через GitHub Actions.
+
+          ⚠️ **ВНИМАНИЕ!** ЭТО ТЕСТОВАЯ ВЕРСИЯ (НЕ РЕКОМЕНДУЕТСЯ ДЛЯ УСТАНОВКИ, ПРЕДНАЗНАЧЕНА ДЛЯ РАЗРАБОТЧИКОВ И ТЕСТОВ).
+          
+          **Известные проблемы:**
+          * ❌ Не работает камера (отсутствуют 32-bit проприетарные библиотеки вендора).
         allowUpdates: true
+        omitBodyDuringUpdate: false
+        omitNameDuringUpdate: false
         token: ${{ secrets.GITHUB_TOKEN }}
