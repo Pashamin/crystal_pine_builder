@@ -277,37 +277,39 @@ jobs:
         export WITH_SU=true
         export ALLOW_MISSING_DEPENDENCIES=true
 
-        # --- 1. ФИКС ЯДРА (Создаем правильный путь и копируем родной конфиг) ---
-        echo "=== ФИКС ПУТЕЙ ЯДРА ==="
- 
+
+        echo "=== КЛОНИРУЕМ КОНФИГ В СТАНДАРТНЫЕ ПАПКИ ==="
+        # Заходим в корень ядра
         cd kernel/xiaomi/sdm439
-
-        mkdir -p arch/configs
-
-        cp arch/arm64/configs/msm8937-perf_defconfig arch/configs/mi439-perf_defconfig
         
-        echo "=== Проверяем фейковую папку ядра ==="
-        ls -la arch/configs/
+
+        mkdir -p arch/arm64/configs
+        mkdir -p arch/arm/configs
         
+        cp arch/arm64/configs/msm8937-perf_defconfig arch/arm64/configs/mi439-perf_defconfig
+        cp arch/arm64/configs/msm8937-perf_defconfig arch/arm/configs/mi439-perf_defconfig
+        
+        echo "=== Проверяем, что конфиги на месте ==="
+        ls -la arch/arm64/configs/mi439-perf_defconfig
+        ls -la arch/arm/configs/mi439-perf_defconfig
+        
+
         cd ../../../
 
 
         echo "=== ОТКЛЮЧАЕМ СЛОМАННУЮ КАМЕРУ ИЗ СБОРКИ ==="
         cd device/xiaomi/sdm439-common/camera/QCamera2
-        
         if [ -f "Android.mk" ]; then
           mv Android.mk Android.mk.bak
           echo "Камера успешно отключена!"
         fi
-        
-
         cd ../../../../../
-
 
         echo "=== СТАРТ СБОРКИ ==="
         source build/envsetup.sh
         lunch crystal_pine-userdebug
         
+        # Собираем
         mka bacon -j2
 
     - name: 8. Создание официального релиза и загрузка ZIP
