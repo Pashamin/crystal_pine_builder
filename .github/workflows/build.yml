@@ -291,7 +291,7 @@ jobs:
         echo "=== Проверяем, что появилось в фейковой папке ==="
         ls -la arch/configs/
         
-        cd /home/runner/work/CrystalOS_build/CrystalOS_build/android
+        cd ../../../
         
         source build/envsetup.sh
         lunch crystal_pine-userdebug
