@@ -278,20 +278,23 @@ jobs:
         export ALLOW_MISSING_DEPENDENCIES=true
 
 
-        echo "=== КЛОНИРУЕМ КОНФИГ В СТАНДАРТНЫЕ ПАПКИ ==="
-        # Заходим в корень ядра
+
+        echo "=== ФИКС ЯДРА ==="
         cd kernel/xiaomi/sdm439
         
 
         mkdir -p arch/arm64/configs
         mkdir -p arch/arm/configs
+        mkdir -p arch/configs
         
+
         cp arch/arm64/configs/msm8937-perf_defconfig arch/arm64/configs/mi439-perf_defconfig
         cp arch/arm64/configs/msm8937-perf_defconfig arch/arm/configs/mi439-perf_defconfig
+        cp arch/arm64/configs/msm8937-perf_defconfig arch/configs/mi439-perf_defconfig
         
-        echo "=== Проверяем, что конфиги на месте ==="
+        echo "=== Проверка ==="
         ls -la arch/arm64/configs/mi439-perf_defconfig
-        ls -la arch/arm/configs/mi439-perf_defconfig
+        ls -la arch/configs/mi439-perf_defconfig
         
 
         cd ../../../
