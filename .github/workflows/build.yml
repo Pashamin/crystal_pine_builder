@@ -277,32 +277,34 @@ jobs:
         export WITH_SU=true
         export ALLOW_MISSING_DEPENDENCIES=true
 
-
-        echo "=== ФИКС ПУТЕЙ ==="
+        # --- 1. ФИКС ЯДРА (Создаем правильный путь и копируем родной конфиг) ---
+        echo "=== ФИКС ПУТЕЙ ЯДРА ==="
+ 
         cd kernel/xiaomi/sdm439
-        
-        REAL_CONFIG_PATH=$(find arch/ -name "*_defconfig" | head -n 1)
-        echo "Реальный конфиг найден тут: $REAL_CONFIG_PATH"
-        
+
         mkdir -p arch/configs
+
+        cp arch/arm64/configs/msm8937-perf_defconfig arch/configs/mi439-perf_defconfig
         
-        cp "$REAL_CONFIG_PATH" arch/configs/mi439-perf_defconfig
-        
-        echo "=== Проверяем, что появилось в фейковой папке ==="
+        echo "=== Проверяем фейковую папку ядра ==="
         ls -la arch/configs/
+        
+        cd ../../../
 
 
         echo "=== ОТКЛЮЧАЕМ СЛОМАННУЮ КАМЕРУ ИЗ СБОРКИ ==="
         cd device/xiaomi/sdm439-common/camera/QCamera2
         
-
         if [ -f "Android.mk" ]; then
           mv Android.mk Android.mk.bak
-          echo "Камера успешно отключена из сборки!"
+          echo "Камера успешно отключена!"
         fi
         
-        cd ../../../
-        
+
+        cd ../../../../../
+
+
+        echo "=== СТАРТ СБОРКИ ==="
         source build/envsetup.sh
         lunch crystal_pine-userdebug
         
