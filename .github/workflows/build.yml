@@ -313,6 +313,17 @@ jobs:
 
 
         echo "=== СТАРТ СБОРКИ ==="
+        echo "=== ВТОРОЙ ФИКС MAKE ==="
+
+        mkdir -p /tmp/make-hack
+        
+
+        cp /usr/bin/make /tmp/make-hack/-C
+        chmod +x /tmp/make-hack/-C
+        
+
+        export PATH=/tmp/make-hack:$PATH
+        echo "/tmp/make-hack" >> $GITHUB_PATH
         source build/envsetup.sh
         lunch crystal_pine-userdebug
         
