@@ -60,6 +60,7 @@ jobs:
           <project name="Pashamin/android_device_xiaomi_pine" path="device/xiaomi/mi439" remote="github" revision="lineage-18.1" />
           <project name="mi-sdm439/android_device_xiaomi_sdm439-common" path="device/xiaomi/sdm439-common" remote="github" revision="lineage-18.1" />
           <project name="Pashamin/android_kernel_xiaomi_sdm439" path="kernel/xiaomi/sdm439" remote="github" revision="lineage-18.1" />
+          <project name="LineageOS/android_device_lineage_sepolicy" path="device/lineage/sepolicy" remote="github" revision="lineage-18.1" />
         </manifest>
         EOF
 
