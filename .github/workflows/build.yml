@@ -118,17 +118,15 @@ jobs:
         fi
 
         if [ -f "device/lineage/sepolicy/qcom/vendor/hal_lineage_livedisplay_qti.te" ]; then
-          echo "Файл 2 найден! Глушим ошибку отсутствующего атрибута..."
-          # Комментируем строку, которая требует hal_lineage_livedisplay_server
-          sed -i '/hal_lineage_livedisplay_server/s/^/# /' device/lineage/sepolicy/qcom/vendor/hal_lineage_livedisplay_qti.te
+          echo "Файл 2 найден! Глушим макрос, который генерирует ошибку..."
+          # Комментируем макрос hal_server_domain
+          sed -i '/hal_server_domain/s/^/# /' device/lineage/sepolicy/qcom/vendor/hal_lineage_livedisplay_qti.te
           
-          echo "Проверяем второй файл:"
+          echo "Проверяем второй файл после фикса:"
           cat device/lineage/sepolicy/qcom/vendor/hal_lineage_livedisplay_qti.te
         fi
 
         
-        
-
         echo "=== УДАЛЕНИЕ ДУБЛИКАТА АУДИО ==="
         
         rm -rf kernel/xiaomi/sdm439/techpack/audio
