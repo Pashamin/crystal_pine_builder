@@ -113,17 +113,20 @@ jobs:
         echo "=== ХАРДКОРНЫЙ ФИКС SEPOLICY LIVEDISPLAY ==="
 
         if [ -f "device/lineage/sepolicy/qcom/dynamic/hal_lineage_livedisplay_sysfs.te" ]; then
-          echo "Файл найден! Комментируем правило, из-за которого всё падает на 43%..."
-          
-          # Комментируем конкретно ту строку, которая лезет в vendor_display_prop и вызывает Neverallow
+          echo "Файл 1 найден! Комментируем старый Neverallow..."
           sed -i '/vendor_display_prop/s/^/# /' device/lineage/sepolicy/qcom/dynamic/hal_lineage_livedisplay_sysfs.te
-          
-          echo "Проверяем, что получилось:"
-          cat device/lineage/sepolicy/qcom/dynamic/hal_lineage_livedisplay_sysfs.te
-        else
-          echo "КРИТИЧЕСКАЯ ОШИБКА: Файл не найден!"
         fi
 
+        if [ -f "device/lineage/sepolicy/qcom/vendor/hal_lineage_livedisplay_qti.te" ]; then
+          echo "Файл 2 найден! Глушим ошибку отсутствующего атрибута..."
+          # Комментируем строку, которая требует hal_lineage_livedisplay_server
+          sed -i '/hal_lineage_livedisplay_server/s/^/# /' device/lineage/sepolicy/qcom/vendor/hal_lineage_livedisplay_qti.te
+          
+          echo "Проверяем второй файл:"
+          cat device/lineage/sepolicy/qcom/vendor/hal_lineage_livedisplay_qti.te
+        fi
+
+        
         
 
         echo "=== УДАЛЕНИЕ ДУБЛИКАТА АУДИО ==="
