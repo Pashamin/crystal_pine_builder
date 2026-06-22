@@ -123,7 +123,7 @@ jobs:
           echo "" > device/lineage/sepolicy/qcom/vendor/hal_lineage_livedisplay_qti.te
         fi
 
-        echo "Проверяем, что файлы пусты (тут должно быть пусто):"
+        echo "Проверяем, что файлы пусты:"
         cat device/lineage/sepolicy/qcom/dynamic/hal_lineage_livedisplay_sysfs.te
         cat device/lineage/sepolicy/qcom/vendor/hal_lineage_livedisplay_qti.te
 
