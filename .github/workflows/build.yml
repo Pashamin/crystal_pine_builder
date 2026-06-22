@@ -112,14 +112,23 @@ jobs:
 
         echo "=== ФИКС SEPOLICY LIVEDISPLAY ==="
 
-        
-        find device/lineage/sepolicy/qcom/ -type f -name "*livedisplay*" | while read -r file; do
-          echo "Выжигаем дотла: $file"
-          echo "" > "$file"
-        done
+        # 1. Фиксим первый файл (убираем только конфликтующий neverallow/allow)
+        if [ -f "device/lineage/sepolicy/qcom/dynamic/hal_lineage_livedisplay_sysfs.te" ]; then
+          echo "Фиксим файл 1..."
+          sed -i '/vendor_display_prop/s/^/# /' device/lineage/sepolicy/qcom/dynamic/hal_lineage_livedisplay_sysfs.te
+        fi
 
-        
+        # 2. Фиксим второй файл (глушим макрос сервера, если он ломает сборку)
+        if [ -f "device/lineage/sepolicy/qcom/vendor/hal_lineage_livedisplay_qti.te" ]; then
+          echo "Фиксим файл 2..."
+          sed -i '/hal_server_domain/s/^/# /' device/lineage/sepolicy/qcom/vendor/hal_lineage_livedisplay_qti.te
+        fi
 
+        # 3. Фиксим третий файл (глушим только строку с qdisplay_service, которая ругалась)
+        if [ -f "device/lineage/sepolicy/qcom/dynamic/hal_lineage_livedisplay_qti.te" ]; then
+          echo "Фиксим файл 3..."
+          sed -i '/qdisplay_service/s/^/# /' device/lineage/sepolicy/qcom/dynamic/hal_lineage_livedisplay_qti.te
+        fi
         
         echo "=== УДАЛЕНИЕ ДУБЛИКАТА АУДИО ==="
         
