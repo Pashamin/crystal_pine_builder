@@ -112,20 +112,11 @@ jobs:
 
         echo "=== ФИКС SEPOLICY LIVEDISPLAY ==="
 
-        if [ -f "device/lineage/sepolicy/qcom/dynamic/hal_lineage_livedisplay_sysfs.te" ]; then
-          echo "Очищаем hal_lineage_livedisplay_sysfs.te..."
-          echo "" > device/lineage/sepolicy/qcom/dynamic/hal_lineage_livedisplay_sysfs.te
-        fi
-
         
-        if [ -f "device/lineage/sepolicy/qcom/vendor/hal_lineage_livedisplay_qti.te" ]; then
-          echo "Очищаем hal_lineage_livedisplay_qti.te..."
-          echo "" > device/lineage/sepolicy/qcom/vendor/hal_lineage_livedisplay_qti.te
-        fi
-
-        echo "Проверяем, что файлы пусты:"
-        cat device/lineage/sepolicy/qcom/dynamic/hal_lineage_livedisplay_sysfs.te
-        cat device/lineage/sepolicy/qcom/vendor/hal_lineage_livedisplay_qti.te
+        find device/lineage/sepolicy/qcom/ -type f -name "*livedisplay*" | while read -r file; do
+          echo "Выжигаем дотла: $file"
+          echo "" > "$file"
+        done
 
         
 
