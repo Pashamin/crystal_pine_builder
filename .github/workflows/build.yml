@@ -339,6 +339,17 @@ jobs:
         find build/ vendor/ -name "kernel.mk" -print -exec sed -i 's/\$(KERNEL_MAKE_CMD)/make/g' {} +
         find build/ vendor/ -name "kernel.mk" -exec sed -i 's/PATH=\$(KERNEL_PATH_OVERRIDE)/PATH=\$(KERNEL_PATH_OVERRIDE) make/g' {} +
 
+        echo "=== ФИКС KERNEL ==="
+        cd kernel/xiaomi/sdm439
+        
+
+        sed -i 's/KBUILD_CFLAGS   :=/KBUILD_CFLAGS   := -fheinous-gnu-extensions -fno-asm /g' Makefile
+        
+
+        sed -i 's/KBUILD_CFLAGS   +=/KBUILD_CFLAGS   += -Wno-asm-operand-widths -Wno-initializer-overrides /g' Makefile
+        
+        cd ../../../
+
         echo "=== СТАРТ СБОРКИ СRYSTALOS ==="
         source build/envsetup.sh
         lunch crystal_pine-userdebug
